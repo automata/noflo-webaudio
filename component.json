@@ -1,0 +1,23 @@
+{
+  "name": "noflo-webaudio",
+  "description": "Web Audio API for NoFlo.",
+  "author": "Vilson Vieira <vilson@void.cc>",
+  "repo": "automata/noflo-webaudio",
+  "version": "0.1.0",
+  "keywords": [],
+  "dependencies": {
+    "noflo/noflo": "*"
+  },
+  "scripts": [
+    "index.js"
+  ],
+  "json": [
+    "component.json"
+  ],
+  "noflo": [
+    "icon": "audio",
+    "components": {
+      
+    }
+  ]
+}
