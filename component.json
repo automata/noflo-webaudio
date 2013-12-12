@@ -20,7 +20,8 @@
   "noflo": {
     "icon": "audio",
     "components": {
-      "Oscillator": "components/Oscillator.coffee"
+      "Oscillator": "components/Oscillator.coffee",
+      "Destination": "components/Destination.coffee"
     }
   }
 }
