@@ -9,7 +9,9 @@
     "noflo/noflo": "*"
   },
   "scripts": [
-    "index.js"
+    "index.js",
+    "lib/WebAudio.coffee",
+    "components/Oscillator.coffee"
   ],
   "json": [
     "component.json"
@@ -17,7 +19,7 @@
   "noflo": [
     "icon": "audio",
     "components": {
-      
+      "Oscillator": "components/Oscillator.coffee"
     }
   ]
 }
