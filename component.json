@@ -16,10 +16,10 @@
   "json": [
     "component.json"
   ],
-  "noflo": [
+  "noflo": {
     "icon": "audio",
     "components": {
       "Oscillator": "components/Oscillator.coffee"
     }
-  ]
+  }
 }
