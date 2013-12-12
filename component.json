@@ -11,7 +11,8 @@
   "scripts": [
     "index.js",
     "lib/WebAudio.coffee",
-    "components/Oscillator.coffee"
+    "components/Oscillator.coffee",
+    "components/Destination.coffee"
   ],
   "json": [
     "component.json"
