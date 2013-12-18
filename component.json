@@ -18,7 +18,7 @@
     "component.json"
   ],
   "noflo": {
-    "icon": "audio",
+    "icon": "music",
     "components": {
       "Oscillator": "components/Oscillator.coffee",
       "Destination": "components/Destination.coffee"

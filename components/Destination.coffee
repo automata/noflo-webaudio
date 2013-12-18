@@ -3,20 +3,19 @@ noflo = require 'noflo'
 {WebAudio} = require '../lib/WebAudio'
 
 class Destination extends WebAudio
+  description: 'audio output'
+  icon: 'volume-up'
   constructor: ->
-    @audioInput = window.nofloWebAudioContext.destination
-
+    super()
+    @audioNode = @context.destination
+  
     @inPorts =
-      audio: new noflo.Port 'object'
+      audio: new noflo.Port()
 
-    @inPorts.audio.on 'data', @syncSource
-    @inPorts.audio.on 'disconnect', @unsyncSource
+    @inPorts.audio.on 'data', (inputData) =>
+      inputData.connect(@audioNode)
 
-  syncSource: (upstream) =>
-    return unless upstream
-    if @audioOutput
-      @audioOutput.connect @audioInput
+    @inPorts.audio.on 'disconnect', =>
 
-  unsyncSource: (event) =>
 
 exports.getComponent = -> new Destination

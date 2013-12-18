@@ -3,54 +3,65 @@ noflo = require 'noflo'
 {WebAudio} = require '../lib/WebAudio'
 
 class Oscillator extends WebAudio
+  description: 'oscillator audio source'
+  icon: 'music'
   constructor: ->
+    super()
+    @audioNode = @context.createOscillator()
 
     @inPorts =
-      audio: new noflo.Port 'object',
-      start: new noflo.Port 'object',
-      stop: new noflo.Port 'object',
-      type: new noflo.Port 'object',
-      frequency: new noflo.Port 'object',
-      detune: new noflo.Port 'object'
+      audio: new noflo.Port('object'),
+      start: new noflo.Port('bang'),
+      stop: new noflo.Port('bang'),
+      type: new noflo.Port('string'),
+      frequency: new noflo.Port('number'),
+      detune: new noflo.Port('number')
 
     @outPorts =
-      audio: new noflo.Port 'object'
+      audio: new noflo.Port('object')
 
-    @inPorts.audio.on 'data', @syncGraph
-    @inPorts.audio.on 'disconnect', @unsyncGraph
-    @inPorts.start.on 'data', @start
-    @inPorts.stop.on 'data', @stop
-    @inPorts.type.on 'data', @setType
-    @inPorts.frequency.on 'data', @setFrequency
-    @inPorts.detune.on 'data', @setDetune
+    @inPorts.audio.on 'data', (inAudio)=>
+      @passAudio(inAudio)
+    @inPorts.start.on 'data', =>
+      @start()
+    @inPorts.stop.on 'data', =>
+      @stop()
+    @inPorts.type.on 'data', (typeValue)=>
+      @setType(typeValue)
+    @inPorts.frequency.on 'data', (freqValue)=>
+      @setFrequency(freqValue)
+    @inPorts.detune.on 'data', (detuneValue)=>
+      @setDetune(detuneValue)
 
-  syncGraph: (data) ->
-    if @outPorts.audio.isAttached()
-      @outPorts.audio.send @audioOutput
-      
-  unsyncGraph: (data) ->
-    if @outPorts.audio.isAttached()
-      @outPorts.audio.disconnect()
+    @passAudio = (inAudio) =>
+      # Got an object, lets pass to the next node
+      inAudio.connect(@audioNode)
+      if @outPorts.audio.isAttached()
+        @outPorts.audio.send @audioNode
 
-  start: (data) ->
-    oscNode = @audioOutput = window.nofloWebAudioContext.createOscillator()
-    oscNode.frequency.value = 440
-    oscNode.detune.value = 0
-    oscNode.type = 'sine'
-    oscNode.start 0
+    @start = () =>
+      # Lets send our audioNode
+      if @outPorts.audio.isAttached()
+        @audioNode = @context.createOscillator()
+        @audioNode.frequency.value = 440
+        @audioNode.detune.value = 0
+        @audioNode.type = 'sine'
+        @audioNode.start 0
+        @outPorts.audio.send @audioNode
 
-  stop: (data) ->
-    @audioOutput.stop 0
-    @audioOutput = null
+    @stop = () =>
+      if @outPorts.audio.isAttached()
+        @audioNode.stop 0
+        @audioNode.disconnect()
+        @outPorts.audio.disconnect()
 
-  setType: (data) ->
-    @audioOutput.type = data
+    @setType = (typeValue) =>
+      @audioNode.type = typeValue
 
-  setFrequency: (data) ->
-    @audioOutput.frequency.value = data
+    @setFrequency = (freqValue) =>
+      @audioNode.frequency.value = freqValue
 
-  setDetune: (data) ->
-    @audioOutput.detune.value = data
-            
+    @setDetune = (detuneValue) =>
+      @audioNode.detune.value = detuneValue
 
 exports.getComponent = -> new Oscillator
