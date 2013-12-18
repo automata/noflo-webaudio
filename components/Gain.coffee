@@ -11,24 +11,26 @@ class Gain extends WebAudio
 
     @inPorts =
       audio: new noflo.Port('object'),
-      gain: new noflo.Port('number')
+      gain: new noflo.Port('object')
 
     @outPorts =
       audio: new noflo.Port('object')
 
     @inPorts.audio.on 'data', (inAudio) =>
       @passAudio(inAudio)
-    @inPorts.gain.on 'data', (gainValue) =>
-      @setGain(gainValue)
+    @inPorts.gain.on 'data', (data) =>
+      @setGain(data)
 
     @passAudio = (inAudio) =>
       # Got an object, lets pass to the next node
-      inAudio.connect(@audioNode)
       if @outPorts.audio.isAttached()
+        inAudio.connect(@audioNode)
         @outPorts.audio.send @audioNode
 
-    @setGain = (gainValue) =>
-      @audioNode.gain.value = gainValue
-
+    @setGain = (data) =>
+      if  (typeof data is 'string')
+        @audioNode.gain.value = gainValue
+      else if (typeof data is 'object')
+        data.connect(@audioNode.gain)
 
 exports.getComponent = -> new Gain
