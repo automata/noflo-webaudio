@@ -24,7 +24,7 @@
       "Oscillator": "components/Oscillator.coffee",
       "Destination": "components/Destination.coffee",
       "Gain": "components/Gain.coffee",
-      "Biquad": "components/Biquad.coffee"
+      "BiquadFilter": "components/BiquadFilter.coffee"
     }
   }
 }
