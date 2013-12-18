@@ -13,7 +13,8 @@
     "lib/WebAudio.coffee",
     "components/Oscillator.coffee",
     "components/Destination.coffee",
-    "components/Gain.coffee"
+    "components/Gain.coffee",
+    "components/BiquadFilter.coffee"
   ],
   "json": [
     "component.json"
