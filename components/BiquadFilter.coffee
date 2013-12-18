@@ -2,7 +2,7 @@ noflo = require 'noflo'
 
 {WebAudio} = require '../lib/WebAudio'
 
-class Biquad extends WebAudio
+class BiquadFilter extends WebAudio
   description: 'biquad filter'
   icon: 'music'
   constructor: ->
@@ -66,4 +66,4 @@ class Biquad extends WebAudio
       else if (typeof data is 'object')
         data.connect(@audioNode.detune)
 
-exports.getComponent = -> new LowPass
+exports.getComponent = -> new BiquadFilter
