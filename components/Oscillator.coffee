@@ -8,6 +8,7 @@ class Oscillator extends WebAudio
   constructor: ->
     super()
     @audioNode = @context.createOscillator()
+    @started = false
 
     @inPorts =
       audio: new noflo.Port('object'),
@@ -40,20 +41,24 @@ class Oscillator extends WebAudio
         @outPorts.audio.send @audioNode
 
     @start = () =>
-      # Lets send our audioNode
-      if @outPorts.audio.isAttached()
-        @audioNode = @context.createOscillator()
-        @audioNode.frequency.value = 440
-        @audioNode.detune.value = 0
-        @audioNode.type = 'sine'
-        @audioNode.start 0
-        @outPorts.audio.send @audioNode
+      # Lets create and send our audioNode
+      if not @started
+        if @outPorts.audio.isAttached()
+          @audioNode = @context.createOscillator()
+          @audioNode.frequency.value = 440
+          @audioNode.detune.value = 0
+          @audioNode.type = 'sine'
+          @audioNode.start 0
+          @outPorts.audio.send @audioNode
+          @started = true
 
     @stop = () =>
-      if @outPorts.audio.isAttached()
-        @audioNode.stop 0
-        @audioNode.disconnect()
-        @outPorts.audio.disconnect()
+      if @started
+        if @outPorts.audio.isAttached()
+          @audioNode.stop 0
+          @audioNode.disconnect()
+          @outPorts.audio.disconnect()
+          @started = false
 
     @setType = (typeValue) =>
       @audioNode.type = typeValue

@@ -12,7 +12,8 @@
     "index.js",
     "lib/WebAudio.coffee",
     "components/Oscillator.coffee",
-    "components/Destination.coffee"
+    "components/Destination.coffee",
+    "components/Gain.coffee"
   ],
   "json": [
     "component.json"
@@ -21,7 +22,8 @@
     "icon": "music",
     "components": {
       "Oscillator": "components/Oscillator.coffee",
-      "Destination": "components/Destination.coffee"
+      "Destination": "components/Destination.coffee",
+      "Gain": "components/Gain.coffee"
     }
   }
 }
