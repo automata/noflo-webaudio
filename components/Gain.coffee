@@ -29,7 +29,7 @@ class Gain extends WebAudio
 
     @setGain = (data) =>
       if  (typeof data is 'string')
-        @audioNode.gain.value = gainValue
+        @audioNode.gain.value = data
       else if (typeof data is 'object')
         data.connect(@audioNode.gain)
 

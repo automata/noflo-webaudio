@@ -23,7 +23,8 @@
     "components": {
       "Oscillator": "components/Oscillator.coffee",
       "Destination": "components/Destination.coffee",
-      "Gain": "components/Gain.coffee"
+      "Gain": "components/Gain.coffee",
+      "Biquad": "components/Biquad.coffee"
     }
   }
 }
