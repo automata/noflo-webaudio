@@ -1,36 +1,21 @@
 noflo = require 'noflo'
+{Primative} = require '../lib/Primative'
 
-{WebAudio} = require '../lib/WebAudio'
-
-class Gain extends WebAudio
-  description: 'gain filter'
+class Gain extends Primative
+  description: 'Multiplies the input audio signal by the given gain value, ' +
+               'changing its amplitude.'
   icon: 'music'
   constructor: ->
-    super()
-    @audioNode = @context.createGain()
+    ports =
+      audionodes:
+        datatype: 'object'
+        description: 'audio nodes (oscillators, buffer sources, ...)'
+        addressable: true
+      gain:
+        datatyle: 'number'
+        description: 'amount of gain to apply (0...1)'
+        required: false
 
-    @inPorts =
-      audio: new noflo.Port('object'),
-      gain: new noflo.Port('object')
-
-    @outPorts =
-      audio: new noflo.Port('object')
-
-    @inPorts.audio.on 'data', (inAudio) =>
-      @passAudio(inAudio)
-    @inPorts.gain.on 'data', (data) =>
-      @setGain(data)
-
-    @passAudio = (inAudio) =>
-      # Got an object, lets pass to the next node
-      if @outPorts.audio.isAttached()
-        inAudio.connect(@audioNode)
-        @outPorts.audio.send @audioNode
-
-    @setGain = (data) =>
-      if  (typeof data is 'string')
-        @audioNode.gain.value = data
-      else if (typeof data is 'object')
-        data.connect(@audioNode.gain)
+    super 'gain', ports
 
 exports.getComponent = -> new Gain

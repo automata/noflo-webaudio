@@ -1,7 +1,7 @@
 {
   "name": "noflo-webaudio",
-  "description": "Web Audio API for NoFlo.",
-  "version": "0.1.0",
+  "description": "NoFlo components for Web Audio API.",
+  "version": "0.2.0",
   "author": {
     "name": "Vilson Vieira",
     "email": "vilson@void.cc"
@@ -17,7 +17,7 @@
     }
   ],
   "dependencies": {
-    "noflo": "~0.4.0"
+    "noflo": "~0.5.0"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -34,5 +34,5 @@
     "grunt-combine": "~0.8.3",
     "grunt-component": "~0.1.2"
   },
-  "keywords": []
+  "keywords": ["noflo", "audio", "webaudio", "webaudioapi"]
 }

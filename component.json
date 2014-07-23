@@ -1,20 +1,19 @@
 {
   "name": "noflo-webaudio",
-  "description": "Web Audio API for NoFlo.",
+  "description": "NoFlo components for Web Audio API.",
   "author": "Vilson Vieira <vilson@void.cc>",
   "repo": "automata/noflo-webaudio",
-  "version": "0.1.0",
-  "keywords": [],
+  "version": "0.2.0",
+  "keywords": ["noflo", "audio", "webaudio", "webaudioapi"],
   "dependencies": {
     "noflo/noflo": "*"
   },
   "scripts": [
     "index.js",
-    "lib/WebAudio.coffee",
+    "lib/Primative.coffee",
+    "components/Play.coffee",
     "components/Oscillator.coffee",
-    "components/Destination.coffee",
-    "components/Gain.coffee",
-    "components/BiquadFilter.coffee"
+    "components/Gain.coffee"
   ],
   "json": [
     "component.json"
@@ -22,10 +21,9 @@
   "noflo": {
     "icon": "music",
     "components": {
+      "Play": "components/Play.coffee",
       "Oscillator": "components/Oscillator.coffee",
-      "Destination": "components/Destination.coffee",
-      "Gain": "components/Gain.coffee",
-      "BiquadFilter": "components/BiquadFilter.coffee"
+      "Gain": "components/Gain.coffee"
     }
   }
 }
