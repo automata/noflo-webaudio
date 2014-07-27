@@ -4,17 +4,17 @@ noflo = require 'noflo'
 class Oscillator extends Primative
   description: 'Create an audio source with a periodic waveform ' +
                '(sine, square, sawtooth, triangle, custom)'
-  icon: 'music'
+  icon: 'volume-up'
   constructor: ->
     ports =
       waveform:
         datatype: 'string'
         description: 'sine, square, sawtooth, triangle, custom'
-        required: false
+        required: true
       frequency:
         datatype: 'number'
         description: 'frequency of signal'
-        required: false
+        required: true
 
     super 'oscillator', ports
 

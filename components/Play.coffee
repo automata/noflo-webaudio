@@ -2,9 +2,10 @@ noflo = require 'noflo'
 
 class Play extends noflo.Component
   description: 'Plays given chains and patterns'
-  icon: 'music'
+  icon: 'play'
   constructor: ->
-    @commands = []
+    @audionodes = []
+    @old_audionodes = []
     if (!window.nofloWebAudioContext)
       context = new AudioContext() if AudioContext?
       context = new webkitAudioContext() if webkitAudioContext?
@@ -12,23 +13,55 @@ class Play extends noflo.Component
     @context = window.nofloWebAudioContext
 
     @inPorts =
-      commands: new noflo.ArrayPort 'object'
+      audionodes: new noflo.ArrayPort 'object'
 
-    @inPorts.commands.on 'data', (commands, i) =>
-      @commands[i] = commands
-      @parse @commands
+    @inPorts.audionodes.on 'data', (audionodes, i) =>
+      console.log 'AUDIONODES', @audionodes
+      console.log i, audionodes
+      @audionodes[i] = audionodes[0]
+      @walk @audionodes, 0
+      @old_audionodes = @audionodes
 
+  # Recursively walk through the AudioNodes' graph and connect them
+  walk: (audionodes, level) =>
+    for audionode in audionodes
+      console.log '**', audionode
+      created = @create audionode
+      # Connect top-level AudioNodes to destination
+      if level is 0
+        created.connect @context.destination
+      if audionode.audionodes?
+        # Has children? 
+        children = audionode.audionodes
+        if children instanceof Array
+          @walk(children, level+1).connect created
+        else
+          @walk([children], level+1).connect created
+      else
+        # Is child?
+        return created
+
+  exists: (audionode) =>
+    return false
+
+  create: (audionode) =>
+    console.log 'created', audionode
+    return @parse audionode
+    # if not @exists(audionode)
+    #   return audionode
+    # return audionode
+
+  # noflo-canvas legacy
   parse: (commands) =>
     return unless @context
     @parseThing commands
-    console.log 'PARSE', commands
 
   # Recursively parse things and arrays of things
   parseThing: (thing, before, after) =>
     if thing? and thing.type? and @[thing.type]?
       if before?
         before()
-      @[thing.type](thing)
+      return @[thing.type](thing)
       if after?
         after()
     else if thing instanceof Array
@@ -36,17 +69,23 @@ class Play extends noflo.Component
         continue unless item?
         @parseThing item, before, after
 
-  # Instructions
-  gain: (gain) =>
-    _gain = @context.createGain()
-    if gain.gain?
-      _gain.gain = gain.gain
-    for node in gain.audionodes
-      _audioNode = @context.createOscillator()
-      _audioNode.type = node.waveform
-      _audioNode.frequency = node.frequency
-      _audioNode.connect _gain
-    _gain.connect @context.destination
-    console.log 'GAIN', gain
+  # Instructions (AudioNodes)
+  gain: (params) =>
+    audioNode = @context.createGain()
+    audioNode.gain.value = params.gain
+    return audioNode
+
+  oscillator: (params) =>
+    waveforms =
+      sine: 0
+      square: 1
+      sawtooth: 2
+      triangle: 3
+    waveform_num = waveforms[params.waveform]
+    audioNode = @context.createOscillator()
+    audioNode.type = waveform_num
+    audioNode.frequency.value = params.frequency
+    console.log audioNode
+    return audioNode
 
 exports.getComponent = -> new Play
