@@ -15,6 +15,12 @@ class Oscillator extends Primative
         datatype: 'number'
         description: 'frequency of signal'
         required: true
+      start:
+        datatype: 'number'
+        description: 'schedules to playback at an exact time'
+      stop:
+        datatype: 'number'
+        description: 'schedules to stop at an exact time'
 
     super 'oscillator', ports
 

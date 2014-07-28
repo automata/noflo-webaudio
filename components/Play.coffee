@@ -16,16 +16,17 @@ class Play extends noflo.Component
       audionodes: new noflo.ArrayPort 'object'
 
     @inPorts.audionodes.on 'data', (audionodes, i) =>
-      console.log 'AUDIONODES', @audionodes
-      console.log i, audionodes
-      @audionodes[i] = audionodes[0]
-      @walk @audionodes, 0
-      @old_audionodes = @audionodes
+      @audionodes[i] = audionodes
+      # Walks just on current i-th arrayport
+      if @audionodes[i] instanceof Array
+        @walk @audionodes[i], 0
+      else
+        @walk [@audionodes[i]], 0
+      #@old_audionodes = @audionodes
 
   # Recursively walk through the AudioNodes' graph and connect them
   walk: (audionodes, level) =>
     for audionode in audionodes
-      console.log '**', audionode
       created = @create audionode
       # Connect top-level AudioNodes to destination
       if level is 0
@@ -45,7 +46,6 @@ class Play extends noflo.Component
     return false
 
   create: (audionode) =>
-    console.log 'created', audionode
     return @parse audionode
     # if not @exists(audionode)
     #   return audionode
@@ -85,7 +85,6 @@ class Play extends noflo.Component
     audioNode = @context.createOscillator()
     audioNode.type = waveform_num
     audioNode.frequency.value = params.frequency
-    console.log audioNode
     return audioNode
 
 exports.getComponent = -> new Play
