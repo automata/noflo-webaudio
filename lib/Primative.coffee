@@ -6,6 +6,8 @@ class exports.Primative extends noflo.Component
     @type = type
     @props = {}
     @props.type = type
+    # We have to identify which AudioNode we are dealing with
+    @props.id = @uniqueId()
 
     @inPorts = new noflo.InPorts ports
     @outPorts = new noflo.OutPorts()
@@ -76,6 +78,7 @@ class exports.Primative extends noflo.Component
         else
           obj = {}
           obj.type = props.type
+          obj.id = props.id
         for own name, prop of props
           if prop instanceof Array
             obj[name] = if prop[i]? then prop[i] else prop[i%prop.length]
@@ -83,3 +86,10 @@ class exports.Primative extends noflo.Component
             obj[name] = prop
         arr.push obj
       return arr
+
+  # Generates an unique ID 
+  # (http://coffeescriptcookbook.com/chapters/strings/generating-a-unique-id)
+  uniqueId: (length=8) ->
+    id = ""
+    id += Math.random().toString(36).substr(2) while id.length < length
+    id.substr 0, length

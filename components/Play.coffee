@@ -5,7 +5,7 @@ class Play extends noflo.Component
   icon: 'play'
   constructor: ->
     @audionodes = []
-    @old_audionodes = []
+    @table_audionodes = {}
     if (!window.nofloWebAudioContext)
       context = new AudioContext() if AudioContext?
       context = new webkitAudioContext() if webkitAudioContext?
@@ -22,7 +22,6 @@ class Play extends noflo.Component
         @walk @audionodes[i], 0
       else
         @walk [@audionodes[i]], 0
-      #@old_audionodes = @audionodes
 
   # Recursively walk through the AudioNodes' graph and connect them
   walk: (audionodes, level) =>
@@ -32,7 +31,7 @@ class Play extends noflo.Component
       if level is 0
         created.connect @context.destination
       if audionode.audionodes?
-        # Has children? 
+        # Has children?
         children = audionode.audionodes
         if children instanceof Array
           @walk(children, level+1).connect created
@@ -42,14 +41,8 @@ class Play extends noflo.Component
         # Is child?
         return created
 
-  exists: (audionode) =>
-    return false
-
   create: (audionode) =>
     return @parse audionode
-    # if not @exists(audionode)
-    #   return audionode
-    # return audionode
 
   # noflo-canvas legacy
   parse: (commands) =>
@@ -71,20 +64,34 @@ class Play extends noflo.Component
 
   # Instructions (AudioNodes)
   gain: (params) =>
-    audioNode = @context.createGain()
+    # For now update/create is almost the same, we should improve this ASAP
+    # so we can get off this selection and to do specific things for each case
+    if params.id of @table_audionodes
+      audioNode = @table_audionodes[params.id]
+    else
+      audioNode = @context.createGain()
+      @table_audionodes[params.id] = audioNode
     audioNode.gain.value = params.gain
     return audioNode
 
   oscillator: (params) =>
+    if params.id of @table_audionodes
+      audioNode = @table_audionodes[params.id]
+    else
+      audioNode = @context.createOscillator()
+      # FIXME: How to deal with start?
+      audioNode.start params.start
+      @table_audionodes[params.id] = audioNode
     waveforms =
       sine: 0
       square: 1
       sawtooth: 2
       triangle: 3
     waveform_num = waveforms[params.waveform]
-    audioNode = @context.createOscillator()
+    
     audioNode.type = waveform_num
     audioNode.frequency.value = params.frequency
+    #audioNode.start params.start
     return audioNode
 
 exports.getComponent = -> new Play
