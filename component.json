@@ -18,7 +18,8 @@
     "components/Chorus.coffee",
     "components/Convolver.coffee",
     "components/Panner.coffee",
-    "components/AudioFile.coffee"
+    "components/AudioFile.coffee",
+    "components/MakeTime.coffee"
   ],
   "json": [
     "component.json"
@@ -32,7 +33,8 @@
       "Chorus": "components/Chorus.coffee",
       "Convolver": "components/Convolver.coffee",
       "Panner": "components/Panner.coffee",
-      "AudioFile": "components/AudioFile.coffee"
+      "AudioFile": "components/AudioFile.coffee",
+      "MakeTime": "components/MakeTime.coffee"
     }
   }
 }

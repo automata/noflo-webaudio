@@ -13,7 +13,6 @@ class AudioFile extends Primative
       play:
         datatype: 'bang'
         description: 'plays the file right now'
-        required: true
       start:
         datatype: 'object'
         description: 'schedules to playback {time, offset, duration}'

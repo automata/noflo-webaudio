@@ -7,6 +7,7 @@ class Play extends noflo.Component
   constructor: ->
     @audionodes = []
     @table_audionodes = {}
+    @buffer_data = {}
     if (!window.nofloWebAudioContext)
       context = new AudioContext() if AudioContext?
       context = new webkitAudioContext() if webkitAudioContext?
@@ -111,12 +112,33 @@ class Play extends noflo.Component
 
   audiofile: (params) =>
     if params.id of @table_audionodes
-      audioNode = @table_audionodes[params.id]
-    else
+      # update
+      # A bit different, we always create a new buffer source
       audioNode = @context.createBufferSource()
-      audioNode.buffer = @data
-      #audioNode.connect(audioContext.destination)
-      #audioNode.start(audioContext.currentTime, offset, duration)
       @table_audionodes[params.id] = audioNode
+      # Update the buffer data
+      if @buffer_data[params.id]?
+        @updateBuffer(audioNode, params.id)
+        # Plays only on update
+        audioNode.start params.start.time, params.start.offset, params.start.duration
+    else
+      # create
+      audioNode = @context.createBufferSource()
+      @table_audionodes[params.id] = audioNode
+      # XHR downloads and loads only at node creation
+      request = new XMLHttpRequest()
+      request.open("GET", params.file, true)
+      request.responseType = "arraybuffer"
+      request.onload = () =>
+        @context.decodeAudioData request.response, (buffer) =>
+          @buffer_data[params.id] = buffer
+          # FIXME: Should we blink the component, how to do that from here?
+          @updateBuffer(audioNode, params.id)
+      request.send()
+
+    return audioNode
+
+  updateBuffer: (audionode, id) =>
+    audionode.buffer = @buffer_data[id]
 
 exports.getComponent = -> new Play
