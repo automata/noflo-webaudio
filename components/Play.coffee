@@ -1,4 +1,5 @@
 noflo = require 'noflo'
+Tuna = require '../vendor/tuna.js'
 
 class Play extends noflo.Component
   description: 'Plays given chains and patterns'
@@ -11,6 +12,7 @@ class Play extends noflo.Component
       context = new webkitAudioContext() if webkitAudioContext?
       window.nofloWebAudioContext = context
     @context = window.nofloWebAudioContext
+    @tuna = new Tuna(@context)
 
     @inPorts =
       audionodes: new noflo.ArrayPort 'object'
@@ -25,6 +27,7 @@ class Play extends noflo.Component
 
   # Recursively walk through the AudioNodes' graph and connect them
   walk: (audionodes, level) =>
+    console.log audionodes, level
     for audionode in audionodes
       created = @create audionode
       # Connect top-level AudioNodes to destination
@@ -33,12 +36,14 @@ class Play extends noflo.Component
       if audionode.audionodes?
         # Has children?
         children = audionode.audionodes
+        console.log 'connect to', created
         if children instanceof Array
           @walk(children, level+1).connect created
         else
           @walk([children], level+1).connect created
       else
         # Is child?
+        console.log 'connect from', created
         return created
 
   create: (audionode) =>
@@ -93,5 +98,25 @@ class Play extends noflo.Component
     audioNode.frequency.value = params.frequency
     #audioNode.start params.start
     return audioNode
+
+  panner: (params) =>
+    if params.id of @table_audionodes
+      audioNode = @table_audionodes[params.id]
+    else
+      audioNode = @context.createPanner()
+      @table_audionodes[params.id] = audioNode
+    # FIXME: Just 2D for now to interoperate with noflo-canvas
+    audioNode.setPosition(params.position.x, params.position.y, 0)
+    return audioNode
+
+  audiofile: (params) =>
+    if params.id of @table_audionodes
+      audioNode = @table_audionodes[params.id]
+    else
+      audioNode = @context.createBufferSource()
+      audioNode.buffer = @data
+      #audioNode.connect(audioContext.destination)
+      #audioNode.start(audioContext.currentTime, offset, duration)
+      @table_audionodes[params.id] = audioNode
 
 exports.getComponent = -> new Play

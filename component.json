@@ -10,10 +10,15 @@
   },
   "scripts": [
     "index.js",
+    "vendor/tuna.js",
     "lib/Primative.coffee",
     "components/Play.coffee",
     "components/Oscillator.coffee",
-    "components/Gain.coffee"
+    "components/Gain.coffee",
+    "components/Chorus.coffee",
+    "components/Convolver.coffee",
+    "components/Panner.coffee",
+    "components/AudioFile.coffee"
   ],
   "json": [
     "component.json"
@@ -23,7 +28,11 @@
     "components": {
       "Play": "components/Play.coffee",
       "Oscillator": "components/Oscillator.coffee",
-      "Gain": "components/Gain.coffee"
+      "Gain": "components/Gain.coffee",
+      "Chorus": "components/Chorus.coffee",
+      "Convolver": "components/Convolver.coffee",
+      "Panner": "components/Panner.coffee",
+      "AudioFile": "components/AudioFile.coffee"
     }
   }
 }
