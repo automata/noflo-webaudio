@@ -28,7 +28,6 @@ class Play extends noflo.Component
 
   # Recursively walk through the AudioNodes' graph and connect them
   walk: (audionodes, level) =>
-    console.log audionodes, level
     for audionode in audionodes
       created = @create audionode
       # Connect top-level AudioNodes to destination
@@ -37,14 +36,12 @@ class Play extends noflo.Component
       if audionode.audionodes?
         # Has children?
         children = audionode.audionodes
-        console.log 'connect to', created
         if children instanceof Array
           @walk(children, level+1).connect created
         else
           @walk([children], level+1).connect created
       else
         # Is child?
-        console.log 'connect from', created
         return created
 
   create: (audionode) =>
