@@ -9,8 +9,10 @@ class Play extends noflo.Component
     @table_audionodes = {}
     @buffer_data = {}
     if (!window.nofloWebAudioContext)
-      context = new AudioContext() if AudioContext?
-      context = new webkitAudioContext() if webkitAudioContext?
+      if AudioContext?
+        context = new AudioContext
+      else if webkitAudioContext?
+        context = new webkitAudioContext
       window.nofloWebAudioContext = context
     @context = window.nofloWebAudioContext
     @tuna = new Tuna(@context)
